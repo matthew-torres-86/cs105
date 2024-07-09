@@ -1,0 +1,17 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Matthew Torres
+;; awk-icon.imp
+;; CS105 Homework 2
+;;
+;; Differentiates between AWK-like and ICON-like semantics.
+
+
+;; assign_unbound attempts to assign a value to an unbound
+;; variable x which will result in a global x in AWK semantics
+;; and a local x in ICON semantics
+(define assign_unbound ()  
+    (set x 5))
+
+(assign_unbound)
+(if (= x 5)
+    1 0 )

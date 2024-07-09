@@ -1,0 +1,47 @@
+;; Unit Tests for AMAKE
+
+(define (array int) make-array-int 
+  ([length : int] [v : int])
+  (make-array 1 9))
+(check-function-type make-array-int (int int -> (array int)))
+
+(define (array bool) make-array-bool 
+  ([length : int] [v : bool])
+  (make-array 3 (= 0 1)))
+
+(check-function-type make-array-bool (int bool -> (array bool)))
+
+
+;; Unit Tests for ASIZE
+
+(define int a-size-int
+  ([a : (array int)])
+  (array-size a))
+(check-function-type a-size-int ((array int) -> int))
+
+(define int a-size-bool
+  ([a : (array bool)])
+  (array-size a))
+(check-function-type a-size-bool ((array bool) -> int))
+
+;; Unit Test for AAT
+(define int a-at-int
+  ([a : (array int)] [i : int])
+  (array-at a i))
+(check-function-type a-at-int ((array int) int  -> int))
+
+(define bool a-at-bool
+  ([a : (array bool)] [i : int])
+  (array-at a i))
+(check-function-type a-at-bool ((array bool) int -> bool))
+
+;; Unit Test for APUT
+(define (array int) a-put-int
+  ([a : (array int)] [i : int] [e : int])
+  (array-put a i e))
+(check-function-type a-put-int ((array int) int int -> (array int)))
+
+(define (array bool) a-put-bool
+  ([a : (array bool)] [i : int] [e : bool])
+  (array-put a i e))
+(check-function-type a-put-bool ((array bool) int bool -> (array bool)))

@@ -1,0 +1,181 @@
+;;;;;;;;;;;;;;;;;;; CS 105 IMPCORE ASSIGNMENT ;;;;;;;;;;;;;;;
+
+;; Your Name: Matthew Torres
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;
+;;;;  Problem 1
+
+
+;; (double-digit n) takes a positive integer less than 20,000, and returns a 
+;; positive integer whose decimal representation is the same as the decimal 
+;; representation of the input, except each digit appears twice
+
+;; laws:
+;;   (double-digit d) == (+ (* d 10) d)
+;;   (double-digit (+ (* 10 m) d)) == (+ (+ (* d 10) d) 
+;;                                    (* (double-digit m) 100))
+
+(define double-digit (n)
+    (if (< n 10) 
+        (+ (* n 10) n)
+        (+ (+ (* (mod n 10) 10) (mod n 10)) 
+            ( * (double-digit (/ n 10)) 100 ))))
+        
+        ;; check-expect tests
+        (check-expect (double-digit 1) 11)
+        (check-expect (double-digit 12) 1122)
+        (check-expect (double-digit 5903) 55990033)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;
+;;;;  Problem 2
+
+
+;; (population-count n) Given a nonnegative integer, returns the number of 1 
+;; bits in the binary representation of that integer. 
+
+;; laws:
+;;   (population-count 0) == 0
+;;   (population-count (+ (* 2 m) b)) == (+ (b) (population count m))
+
+(define population-count (n)
+    (if (= n 0)
+        0
+        (+ (mod n 2) (population-count (/ n 2)))))
+        
+        ;; check-expect tests
+        (check-expect (population-count 0) 0)
+        (check-expect (population-count 2) 1)
+        (check-expect (population-count 16) 1)
+        (check-expect (population-count 17) 2)
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;
+;;;;  Problem 3
+
+
+;; (binary n) returns a decimal m such that the decimal representation of m
+;; looks like the binary representation of n
+
+;; laws:
+;;   (binary 0) == 0
+;;   (binary (+ (* 2 m) b)) == (+ b (* 10 (population count m)))
+
+(define binary (n)
+    (if (= n 0)
+        0
+            (+ (mod n 2) (* 10 (binary (/ n 2))))
+        )
+    )
+        ;; check-expect tests
+        (check-expect (binary 0) 0)
+        (check-expect (binary 2) 10)
+        (check-expect (binary 16) 10000)
+        (check-expect (binary 17) 10001)
+        (check-expect (binary -5) -101)
+        
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;
+;;;;  Problem 4
+
+
+;; (sigma m n) takes two integers m <= n and returns the sum of 
+;; consecutive integers from m to n, inclusive
+
+;; laws:
+;;   (sigma m m) == m
+;;   (sigma m n) == (+ m (sigma (+ m 1) n)), where n > m
+
+(define sigma (m n)
+    (if (>= m n)
+        m
+        (+ m (sigma (+ m 1) n))))
+
+        ;; check-expect tests
+        (check-expect (sigma 1 5) 15)
+        (check-expect (sigma 1 100) 5050)
+        (check-expect (sigma 8 8) 8) 
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;
+;;;;  Problem 5
+
+;; (find-divisor? n i) takes a number n and i = 2, and returns 1
+;; if n has any divisors from [2, n-1], else 0.
+
+;; laws:
+;;   (find-divisor? n i) == 1, when (= (mod n i) 0)
+;;   (find-divisor? n i) == 0, when (= n i)
+;;   (find-divisor? n i) == (find-divisor? n (+ i 1))
+
+
+
+(define find-divisor? (n i)
+    (if (= (mod n i) 0)
+        (if (< i n) 1 0)
+            (find-divisor? n (+ 1 i))))
+
+;; (prime? n) takes number n, returns 1 if n is prime, else 0
+;; laws:
+;;   (prime? n) == 0, when n < 2
+;;   (prime? n) == 1, when n = 2
+;;   (prime? n) == (not find-divisor? n 2), when n > 2
+
+(define prime? (n)
+    (if (< n 2)
+        0
+        (if (= n 2)
+            1
+            (not (find-divisor? n 2)))))
+
+
+        ;;check-assert tests
+        (check-assert(prime? 2))
+        (check-assert(not (prime? 1)))
+        (check-assert(not (prime? 0)))
+        (check-assert(prime? 307))
+        (check-assert(not (prime? 305)))
+        (check-assert(not (prime? 306)))
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;
+;;;;  Problem 6
+
+;; (nthprime n) returns the nth prime number
+
+;; laws:
+;;   (find-prime n i) == 2, when (= n 1)
+;;   (find-prime n i) == (find-prime (- n 1) (+ i 1)), when i is prime
+;;   (find-prime n i) == (find-prime n (+ i 1)), when i is not prime
+
+
+(define find-prime(n  i)
+    (if (prime? i)
+        (if (= n 1)
+            i
+            (find-prime (- n 1) (+ i 1)))
+        (find-prime n (+ i 1))))
+
+;; (nthprime n) returns the nth prime number
+
+;; laws:
+;;   (nthprime n) == 2, when (= n 1)
+;;   (nthprime n) == (find-prime n 2)
+
+(define nthprime (n)
+    (find-prime n  2))
+    
+        ;; check-expect tests
+        (check-expect (nthprime 1) 2)
+        (check-expect (nthprime 2) 3)
+        (check-expect (nthprime 3) 5)
+        (check-expect (nthprime 5) 11)
